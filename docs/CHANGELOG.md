@@ -106,6 +106,16 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** –
 - **Status:** Done (tested: down → next, up → previous, sideways in both directions, small trackpad deltas, and a click after hover opening `/projects/<slug>`)
 
+## 1.9 · Clicking a folder further along keeps the animation going
+- **Area:** Home page
+- **Feedback:** Clicking a folder further along the row should also keep the folder animation going (review round 5).
+- **Change:** Clicking a folder that is not in the centre used to make the row jump straight to it, and the folder stayed shut. Now the row slides smoothly to the clicked folder, which turns red as it reaches the centre and then fans its cards open, just like hovering does. Clicking it again opens the project. The arrow keys also slide one folder at a time instead of jumping, and pressing an arrow repeatedly queues the steps. Scrolling or dragging during the slide cancels the automatic fan-out.
+- **Why:** Every way of moving through the folders (scroll, drag, keys or click) now has the same smooth movement, so the row reads as one continuous animation.
+- **Files:** `components/folder-row.tsx`
+- **Before:** –
+- **After:** docs/screenshots/after-folder-open-desktop.png
+- **Status:** Done (tested: clicking the next folder slides it in over several frames, it becomes the active project and fans open)
+
 ## 2.1 · New "All Projects" page
 - **Area:** Navigation & accessibility
 - **Feedback:** Create a separate page that clearly lists and explains every project in the portfolio. Provide an alternative way to explore projects for users who find the homepage animations difficult to navigate.

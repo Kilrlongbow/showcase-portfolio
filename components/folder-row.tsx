@@ -60,6 +60,8 @@ export function FolderRow({
   const targetSilentRef = useRef(true);
   const wheelAccumRef = useRef(0);
   const wheelLockRef = useRef(0);
+  // Fan the folder open once a click-to-move animation arrives
+  const openOnArrivalRef = useRef(false);
   const velocityRef = useRef(0);
   const frameRef = useRef<number | null>(null);
   const dragRef = useRef<{ x: number; rotation: number; last: number; moved: boolean } | null>(null);
@@ -98,6 +100,10 @@ export function FolderRow({
         } else {
           commitRotation(targetRef.current, targetSilentRef.current);
           targetRef.current = null;
+          if (openOnArrivalRef.current) {
+            openOnArrivalRef.current = false;
+            setIsOpen(true);
+          }
         }
       } else if (Math.abs(velocityRef.current) > 0.001 && !reduceMotion) {
         commitRotation(rotationRef.current + velocityRef.current);
@@ -147,12 +153,16 @@ export function FolderRow({
     runAnimationRef.current();
   }, [activeIndex, count]);
 
-  const moveTo = (nextRotation: number) => {
+  /** Slides the row to a slot; with `openOnArrival` the folder fans open when it lands */
+  const moveTo = (nextRotation: number, openOnArrival = false) => {
     velocityRef.current = 0;
-    targetRef.current = null;
-    commitRotation(nextRotation);
+    targetSilentRef.current = false;
+    openOnArrivalRef.current = openOnArrival;
+    targetRef.current = nextRotation;
     runAnimation();
   };
+
+  const nextSlot = (step: number) => (targetRef.current ?? Math.round(rotationRef.current)) + step;
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -172,6 +182,7 @@ export function FolderRow({
       const direction = Math.sign(wheelAccumRef.current);
       wheelAccumRef.current = 0;
       wheelLockRef.current = now + 280;
+      openOnArrivalRef.current = false;
       velocityRef.current = 0;
       const base = targetRef.current ?? Math.round(rotationRef.current);
       targetSilentRef.current = false;
@@ -197,6 +208,7 @@ export function FolderRow({
       if (Math.abs(distance) < 6) return;
       drag.moved = true;
       targetRef.current = null;
+      openOnArrivalRef.current = false;
       setIsDragging(true);
       event.currentTarget.setPointerCapture(event.pointerId);
     }
@@ -229,7 +241,7 @@ export function FolderRow({
       if (isOpen || isHovered) openProject();
       else setIsOpen(true);
     } else {
-      moveTo(slot);
+      moveTo(slot, true);
     }
   };
 
@@ -242,10 +254,10 @@ export function FolderRow({
     if (event.target !== event.currentTarget) return;
     if (event.key === "ArrowRight" || event.key === "ArrowDown") {
       event.preventDefault();
-      moveTo(Math.round(rotationRef.current) + 1);
+      moveTo(nextSlot(1));
     } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
       event.preventDefault();
-      moveTo(Math.round(rotationRef.current) - 1);
+      moveTo(nextSlot(-1));
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       if (isOpen) openProject();
