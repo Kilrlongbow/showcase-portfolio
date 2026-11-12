@@ -19,6 +19,10 @@ if (!prefix || paths.length === 0) {
 
 const devices = {
   desktop: { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false },
+  ...(process.env.EXTRA ? {
+    laptop: { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false },
+    small: { width: 1024, height: 700, deviceScaleFactor: 1, mobile: false },
+  } : {}),
   mobile: { width: 390, height: 844, deviceScaleFactor: 2, mobile: true },
 };
 
@@ -85,7 +89,11 @@ for (const path of paths) {
     const { data } = await send("Page.captureScreenshot", { format: "png" });
     const file = `docs/screenshots/${prefix}-${nameFor(path)}-${device}.png`;
     writeFileSync(file, Buffer.from(data, "base64"));
-    console.log(file);
+    const { result } = await send("Runtime.evaluate", {
+      expression: "document.documentElement.scrollHeight - innerHeight",
+      returnByValue: true,
+    });
+    console.log(`${file}  (scrollable: ${result.value}px)`);
   }
 }
 ws.close();

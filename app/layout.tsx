@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { HideOnHome } from "@/components/hide-on-home";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,7 +34,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" className="flex flex-1 flex-col">
           {children}
         </main>
-        <Footer />
+        <HideOnHome>
+          <Footer />
+        </HideOnHome>
       </body>
     </html>
   );

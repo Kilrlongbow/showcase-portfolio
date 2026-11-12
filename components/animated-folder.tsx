@@ -31,7 +31,8 @@ export function AnimatedFolder({ project, open, interactive = false, className }
   const images = project.images.slice(0, 3).map((image, index) => ({
     id: `${project.slug}-${index}`,
     image: image.src,
-    title: image.alt,
+    // The cards say what the folder holds: one card per case-study step
+    title: project.sections[index]?.heading ?? image.alt,
   }));
 
   const handleProjectClick = (id: string, index: number) => {

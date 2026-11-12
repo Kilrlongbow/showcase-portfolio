@@ -19,7 +19,7 @@ export interface WheelCarouselItem {
   label: string;
   image: string;
   imageAlt?: string;
-  /** Overrides the selected colour for this item; unselected items get a faded version */
+  /** Colour of this item's label and the marker while it is selected */
   color?: string;
 }
 
@@ -49,12 +49,6 @@ export interface WheelCarouselProps {
   background?: string;
   panelColor?: string;
   scrollSpeed?: number;
-  /**
-   * When false the wheel never takes over page scrolling: mouse-wheel and
-   * vertical swipes scroll the page, and the wheel only follows
-   * keyboard input and its `activeIndex`.
-   */
-  capturePageScroll?: boolean;
   dragSpeed?: number;
   snap?: boolean;
   momentum?: boolean;
@@ -129,7 +123,6 @@ export function WheelCarousel({
   background = "rgb(255, 246, 236)",
   panelColor,
   scrollSpeed = 0.008,
-  capturePageScroll = true,
   dragSpeed = 0.02,
   snap = true,
   momentum = true,
@@ -294,7 +287,7 @@ export function WheelCarousel({
 
   useEffect(() => {
     const stage = stageRef.current;
-    if (!stage || !capturePageScroll) return;
+    if (!stage) return;
 
     const handleWheel = (event: globalThis.WheelEvent) => {
       if (event.ctrlKey || event.metaKey) return; // don't hijack pinch-zoom
@@ -308,7 +301,7 @@ export function WheelCarousel({
 
     stage.addEventListener("wheel", handleWheel, { passive: false });
     return () => stage.removeEventListener("wheel", handleWheel);
-  }, [capturePageScroll, commitRotation, runAnimation, scrollSpeed]);
+  }, [commitRotation, runAnimation, scrollSpeed]);
 
   useEffect(() => {
     if (activeIndex === undefined) return;
@@ -333,7 +326,7 @@ export function WheelCarousel({
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (!event.isPrimary || event.button !== 0 || !capturePageScroll) return;
+    if (!event.isPrimary || event.button !== 0) return;
     draggingRef.current = true;
     targetRef.current = null;
     setIsDragging(true);
@@ -412,10 +405,9 @@ export function WheelCarousel({
         }
         tabIndex={0}
         className={cn(
-          "flex h-full w-full select-none items-stretch overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-current",
+          "flex h-full w-full touch-none select-none items-stretch overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-current",
           photoSide === "right" && "flex-row-reverse",
-          capturePageScroll ? "touch-none" : "touch-pan-y",
-          capturePageScroll && (isDragging ? "cursor-grabbing" : "cursor-grab"),
+          isDragging ? "cursor-grabbing" : "cursor-grab",
         )}
         style={{ maxWidth: contentWidth, gap }}
         onPointerDown={handlePointerDown}
@@ -503,14 +495,7 @@ export function WheelCarousel({
                 )}
                 style={{
                   left: `${apexInset}%`,
-                  color: item.color
-                    ? selected
-                      ? item.color
-                      : `color-mix(in oklab, ${item.color} 55%, transparent)`
-                    : selected
-                      ? palette.selected
-                      : palette.text,
-                  transition: "color 300ms ease-out",
+                  color: selected ? (item.color ?? palette.selected) : palette.text,
                   opacity: round(opacity),
                   transform: `translate(${round(x)}px, ${round(y)}px) translateY(-50%) rotate(${round(angle)}deg) scale(${round(scale)})`,
                 }}

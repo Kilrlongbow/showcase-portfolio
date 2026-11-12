@@ -72,6 +72,8 @@ def status_colour(status: str) -> str:
         return "DCEFD9"
     if status.startswith("Waiting"):
         return "FBE3C2"
+    if status.startswith("Skipped"):
+        return "E6E6E6"
     return "DCE8F2"
 
 

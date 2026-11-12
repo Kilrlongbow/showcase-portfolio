@@ -26,24 +26,24 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** –
 - **Status:** Done
 
-## 1.1 · Folder colours carried into the titles
+## 1.1 · Only the active project is highlighted
 - **Area:** Home page
-- **Feedback:** Improve colour coordination between folder titles and folder variants. Match or complement the text colours with the corresponding folder colours instead of keeping all titles red.
-- **Change:** Every project now has an `ink` colour: its folder colour, darkened where needed so text stays readable (4.5:1 or better on the papaya background). The wheel shows each project name in its own colour (faded when not selected), and the marker dot, the caption under the folders and the "Open …" button all switch to the active project's colour. SmartHome uses `#2F6585` (folder `#669BBC` was only 2.67:1) and the gold slot uses `#8A5A00` (folder `#D9A441` was only 1.99:1).
-- **Why:** The red titles made every project look the same and didn't match the blue and gold folders. Linking text to folder colour shows which name belongs to which folder, and the contrast check keeps it WCAG AA compliant.
+- **Feedback:** Improve colour coordination between folder titles and folder variants. Match or complement the text colours with the corresponding folder colours instead of keeping all titles red. *Review round 2:* only the active folder's name should be highlighted in a different colour; all other texts and folders keep their colours.
+- **Change:** The selected name in the project wheel and its marker dot now take the active folder's colour. They used to be always red. All other names keep the V1 grey, the folders keep their own colours, and the Open button keeps its V1 style. Each project has an `ink` colour: its folder colour, darkened only where needed for 4.5:1 contrast on the papaya background. SmartHome uses `#2F6585` (folder `#669BBC` was 2.67:1) and the gold slot uses `#8A5A00` (folder `#D9A441` was 1.99:1). Round 1 also coloured every name and the button; that was reverted after review.
+- **Why:** The highlighted name now visibly belongs to the highlighted folder, without making the rest of the page busier.
 - **Files:** `data/projects.ts`, `components/wheel-carousel.tsx`, `components/hero.tsx`
 - **Before:** docs/screenshots/before-home-desktop.png
 - **After:** docs/screenshots/after-home-desktop.png
 - **Status:** Done
 
-## 1.2 · No more overlap, more breathing room
+## 1.2 · Home page fits one screen
 - **Area:** Home page
-- **Feedback:** Fix overlapping text, folders and other visual elements. Improve spacing so every element has enough room to breathe.
-- **Change:** The folder row is no longer absolutely positioned across the photo. It now sits in the normal flow under the intro, in the left 64% of the column, with the photo in its own space on the right. The row shows two folders on each side instead of three. A spacing band separates the intro, the folders, the hint, the caption and the buttons. On mobile the photo is hidden in the hero (it is still on the About page) because it always overlapped the folders on narrow screens.
-- **Why:** In V1 the folders, the photo, the background word and the wheel all overlapped, which made the page feel cluttered and hid the folders.
-- **Files:** `components/hero.tsx`
-- **Before:** docs/screenshots/before-home-desktop.png, docs/screenshots/before-home-mobile.png
-- **After:** docs/screenshots/after-home-desktop.png, docs/screenshots/after-home-mobile.png
+- **Feedback:** Fix overlapping text, folders and other visual elements. Improve spacing so every element has enough room to breathe. *Review round 2:* keep the layout, the picture and the other elements as they were; remove the footer so the home page needs no further scrolling.
+- **Change:** Round 1 rearranged the hero (folders moved off the photo, extra caption and hint). After review that was reverted, and the V1 layout and photo are back unchanged. Instead, the footer is hidden on the home page only (`HideOnHome`), so the page fits the screen. Measured with no scrolling at 1440×900, 1280×720 and 1024×700. On short laptop screens the folder block moves up only as far as needed to keep the Open button on screen (`top: min(30%, 100% − 468px)`); at normal heights it sits exactly where it did in V1. On phones the V1 stacked layout is still taller than the screen, so it scrolls (237 px at 390×844).
+- **Why:** The layout and photo are part of the portfolio's identity. The scrolling on the home page came from the footer, not from the hero.
+- **Files:** `components/hide-on-home.tsx`, `app/layout.tsx`, `components/hero.tsx`
+- **Before:** docs/screenshots/before-home-desktop.png
+- **After:** docs/screenshots/after-home-desktop.png
 - **Status:** Done
 
 ## 1.3 · Opaque folder pop-ups
@@ -59,18 +59,18 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 ## 1.4 · Folder contents explained
 - **Area:** Home page
 - **Feedback:** Include clear descriptions of the contents of each folder or pocket.
-- **Change:** A caption under the active folder shows the project's discipline, its title, a one-sentence summary and an "Inside:" line listing what the folder contains (Problem · Research · Frontend build · Result). The lightbox still links through to the full case study.
-- **Why:** Visitors could not tell what a folder held without opening it.
-- **Files:** `components/hero.tsx`, `data/projects.ts`
-- **Before:** docs/screenshots/before-home-desktop.png
-- **After:** docs/screenshots/after-home-desktop.png
-- **Status:** Done (the summaries are waiting on content; see 5.3)
+- **Change:** The cards that fan out of a folder are now labelled with what the folder contains: one card per case-study step ("The problem", "Research & early concepts", "Frontend build"). They used to say "HiccupViews screen 1". The same labels appear in the lightbox, and the full descriptions are on the new projects page (2.1). The caption under the folders from round 1 was removed after review to keep the V1 layout.
+- **Why:** Visitors can see what is inside a folder by peeking into it, without any extra elements on the home page.
+- **Files:** `components/animated-folder.tsx`, `data/projects.ts`
+- **Before:** –
+- **After:** docs/screenshots/after-folder-open-desktop.png
+- **Status:** Done
 
 ## 1.5 · "WORK" becomes "EUGENE"
 - **Area:** Home page
 - **Feedback:** Replace the background word "WORK" with "EUGENE" to make the portfolio more personal.
-- **Change:** The background word now reads "Eugene". It also moved from behind the photo and folders into the open space above the folders, so the whole name stays readable.
-- **Why:** It makes the portfolio more personal, and in the new position the photo no longer hides half the word.
+- **Change:** The large background word now reads "Eugene", in the same place, size and colour as "Work" was.
+- **Why:** It makes the portfolio more personal.
 - **Files:** `components/hero.tsx`
 - **Before:** docs/screenshots/before-home-desktop.png
 - **After:** docs/screenshots/after-home-desktop.png
@@ -89,9 +89,9 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 ## 2.2 · Clearer navigation
 - **Area:** Navigation & accessibility
 - **Feedback:** Make the overall navigation more intuitive and understandable.
-- **Change:** The main menu is now Home · Projects · About Me · Contact, and Projects stays highlighted on the case-study pages. The homepage has a visible "See all projects as a list" link next to the Open button. A short hint under the folders ("Swipe, drag or use ← → to browse · click a folder to peek inside") makes visible the instructions that were previously only in the screen-reader label.
-- **Why:** Visitors did not know how to work the folders, and the only way to reach the projects was through the animation.
-- **Files:** `components/nav.tsx`, `components/hero.tsx`, `components/folder-row.tsx`
+- **Change:** The main menu is now Home · Projects · About Me · Contact, and Projects stays highlighted on the case-study pages. The extra hint and "See all projects as a list" link added under the folders in round 1 were removed after review to keep the V1 home layout. The menu link is now the way to the list view.
+- **Why:** The projects can be reached without the animation, from every page, without changing the home page.
+- **Files:** `components/nav.tsx`
 - **Before:** docs/screenshots/before-home-desktop.png
 - **After:** docs/screenshots/after-home-desktop.png
 - **Status:** Done
@@ -116,12 +116,12 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** docs/screenshots/after-about-desktop.png, docs/screenshots/after-about-flipped-desktop.png
 - **Status:** Done (the facts on the back are placeholders for Eugene to confirm)
 
-## 4.1 · Scrolling no longer hijacked
+## 4.1 · Home page scroll behaviour kept as in V1
 - **Area:** Portfolio page & scrolling
-- **Feedback:** Reduce excessive movement during scrolling. Ensure scrolling effects work correctly without distracting users.
-- **Change:** Vertical mouse-wheel scrolling over the folder row used to spin the folders and block the page. Now the row only reacts to sideways scrolling (trackpad swipe or Shift + wheel), the arrow keys, dragging and clicks, and normal scrolling moves the page. Tested: a vertical wheel over the folders scrolls the page about 250–290 px. Speed and momentum are lower: the folder step went from 0.006 to 0.004 per pixel, glide decay from 0.9 to 0.85, and the wheel speed from 0.008 to 0.005. On mobile the project wheel no longer catches vertical swipes, so the page scrolls normally.
-- **Why:** Spinning the carousel when you meant to scroll the page was the main source of the "too much movement" feedback.
-- **Files:** `components/folder-row.tsx`, `components/wheel-carousel.tsx`, `components/hero.tsx`
+- **Feedback:** Reduce excessive movement during scrolling. Ensure scrolling effects work correctly without distracting users. *Review round 2:* keep the other scroll functions as they were.
+- **Change:** Round 1 made the folder row react only to sideways scrolling and stopped the wheel taking over scrolling on mobile. After review those changes were reverted, and the folders and project wheel scroll exactly as in V1. Now that the home page fits one screen (1.2), the mouse wheel is only used to browse the folders, so it no longer competes with scrolling the page.
+- **Why:** Scrolling through the folders is a core part of the home page. The conflict came from the page itself scrolling, and removing the footer fixed that.
+- **Files:** `components/folder-row.tsx`, `components/wheel-carousel.tsx`
 - **Before:** –
 - **After:** –
 - **Status:** Done
@@ -179,9 +179,19 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 ## 6.1 · Exploring more creative fonts
 - **Area:** Typography
 - **Feedback:** Explore more creative fonts within the portfolio.
-- **Change:** A temporary comparison page at `/fonts` (development only, never in production) compares three directions against the current Barlow Condensed. A, bold editorial: Fraunces and Instrument Serif. B, playful/handmade: Caveat Brush and Permanent Marker. C, sporty/racing: Unbounded and Big Shoulders. Each sample shows the hero title, a folder label and a case-study heading. All fonts load through `next/font/google`, which hosts them on the site itself with no layout shift.
-- **Why:** Seeing the fonts in context makes the choice easier than comparing names. Body text stays Inter so long texts stay readable.
-- **Files:** `app/fonts/page.tsx`
+- **Change:** Round 1 built a temporary page comparing three directions: editorial (Fraunces, Instrument Serif), handmade (Caveat Brush, Permanent Marker) and racing (Unbounded, Big Shoulders). After review, font changes are on hold, so the comparison page was removed and the site keeps Barlow Condensed and Inter. It is still in the git history (commit `6758dd5`) if needed.
+- **Why:** This round focused on layout and usability.
+- **Files:** `app/fonts/page.tsx` (removed)
 - **Before:** –
-- **After:** docs/screenshots/after-fonts-desktop.png
-- **Status:** In progress: waiting for Eugene to choose a direction, then it gets applied site-wide and the page is removed
+- **After:** –
+- **Status:** Skipped for now
+
+## R.1 · Review of round 1
+- **Area:** Review
+- **Feedback:** The layout had to stay the same without changing the picture or other elements. Remove the footer so that no further page scrolling is needed on the home page, but keep the other scroll functions as they were. Only the active folder's name should be highlighted in a different colour; the rest of the texts and folders stay the same. Skip the font changes for now.
+- **Change:** The home hero, folder row and project wheel were restored to V1. On top of that, only the requested changes were applied again: the "Eugene" background word, the colour on the active name only, folder contents on the fan-out cards, and the footer hidden on the home page. The font comparison page was removed. The projects page, the About flip card, opaque pop-ups and case-study changes stay. Entries 1.1, 1.2, 1.4, 1.5, 2.2, 4.1 and 6.1 were updated to match.
+- **Why:** The folder layout is the creative concept and should be refined, not redesigned.
+- **Files:** `components/hero.tsx`, `components/folder-row.tsx`, `components/wheel-carousel.tsx`, `components/animated-folder.tsx`, `components/hide-on-home.tsx`, `app/layout.tsx`
+- **Before:** –
+- **After:** docs/screenshots/after-home-desktop.png
+- **Status:** Done
