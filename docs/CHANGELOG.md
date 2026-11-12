@@ -96,6 +96,16 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** docs/screenshots/after-home-desktop.png, docs/screenshots/after-folder-open-desktop.png
 - **Status:** Done
 
+## 1.8 · Folder scrolling and opening
+- **Area:** Home page
+- **Feedback:** Scrolling should also work when hovering over the folders, in both directions. Clicking a folder after the hover animation should open it (review round 4).
+- **Change:** Scroll: one mouse-wheel notch used to move two folders, because the leftover glide roughly doubled each step, so the row felt erratic. Now every notch or swipe moves exactly one folder. Up or left goes to the previous folder, down or right to the next, and the row wraps around at both ends. Small trackpad movements add up until they reach one step, and a short pause after each step stops one flick from skipping several folders. Opening: hovering still fans the folder open, and clicking it now opens the project's case study. Before, the click only toggled an invisible state. On touch screens the first tap fans the folder and the second opens the project. On the keyboard, Enter peeks inside and Enter again opens it. Clicking one of the fanned cards still opens the image viewer.
+- **Why:** Scrolling is the main way through the folders, so it has to be predictable. Clicking a folder that is already open should do something.
+- **Files:** `components/folder-row.tsx`
+- **Before:** –
+- **After:** –
+- **Status:** Done (tested: down → next, up → previous, sideways in both directions, small trackpad deltas, and a click after hover opening `/projects/<slug>`)
+
 ## 2.1 · New "All Projects" page
 - **Area:** Navigation & accessibility
 - **Feedback:** Create a separate page that clearly lists and explains every project in the portfolio. Provide an alternative way to explore projects for users who find the homepage animations difficult to navigate.

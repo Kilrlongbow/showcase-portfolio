@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
 import { useReducedMotion } from "framer-motion";
 import type { Project } from "@/data/projects";
 import { AnimatedFolder } from "@/components/animated-folder";
@@ -45,6 +46,7 @@ export function FolderRow({
   className,
 }: FolderRowProps) {
   const reduceMotion = useReducedMotion() ?? false;
+  const router = useRouter();
   const count = projects.length;
   const [rotation, setRotation] = useState(activeIndex);
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +56,10 @@ export function FolderRow({
   const rotationRef = useRef(activeIndex);
   const selectedRef = useRef(activeIndex);
   const targetRef = useRef<number | null>(null);
+  // Targets set by the parent are applied silently; our own steps are reported
+  const targetSilentRef = useRef(true);
+  const wheelAccumRef = useRef(0);
+  const wheelLockRef = useRef(0);
   const velocityRef = useRef(0);
   const frameRef = useRef<number | null>(null);
   const dragRef = useRef<{ x: number; rotation: number; last: number; moved: boolean } | null>(null);
@@ -87,10 +93,10 @@ export function FolderRow({
       if (targetRef.current !== null) {
         const delta = targetRef.current - rotationRef.current;
         if (Math.abs(delta) > 0.001 && !reduceMotion) {
-          commitRotation(rotationRef.current + delta * 0.16, true);
+          commitRotation(rotationRef.current + delta * 0.16, targetSilentRef.current);
           keepAnimating = true;
         } else {
-          commitRotation(targetRef.current, true);
+          commitRotation(targetRef.current, targetSilentRef.current);
           targetRef.current = null;
         }
       } else if (Math.abs(velocityRef.current) > 0.001 && !reduceMotion) {
@@ -136,6 +142,7 @@ export function FolderRow({
     if (delta < -count / 2) delta += count;
     selectedRef.current = target;
     velocityRef.current = 0;
+    targetSilentRef.current = true;
     targetRef.current = Math.round(rotationRef.current) + delta;
     runAnimationRef.current();
   }, [activeIndex, count]);
@@ -151,20 +158,30 @@ export function FolderRow({
     const stage = stageRef.current;
     if (!stage) return;
 
+    // Every wheel notch or swipe moves exactly one folder, up/left for the
+    // previous one and down/right for the next. Small trackpad deltas add up
+    // until they reach one step; a short lock stops one flick skipping folders.
     const handleWheel = (event: globalThis.WheelEvent) => {
       if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
-      targetRef.current = null;
       const raw = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      const delta = raw * 0.006;
-      commitRotation(rotationRef.current + delta);
-      velocityRef.current = delta * 0.2;
+      const now = performance.now();
+      if (now < wheelLockRef.current) return;
+      wheelAccumRef.current += event.deltaMode === 1 ? raw * 40 : raw;
+      if (Math.abs(wheelAccumRef.current) < 40) return;
+      const direction = Math.sign(wheelAccumRef.current);
+      wheelAccumRef.current = 0;
+      wheelLockRef.current = now + 280;
+      velocityRef.current = 0;
+      const base = targetRef.current ?? Math.round(rotationRef.current);
+      targetSilentRef.current = false;
+      targetRef.current = base + direction;
       runAnimation();
     };
 
     stage.addEventListener("wheel", handleWheel, { passive: false });
     return () => stage.removeEventListener("wheel", handleWheel);
-  }, [commitRotation, runAnimation]);
+  }, [runAnimation]);
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary || event.button !== 0) return;
@@ -207,10 +224,18 @@ export function FolderRow({
       return;
     }
     if (slot === Math.round(rotationRef.current)) {
-      setIsOpen((open) => !open);
+      // First click (or tap) fans the folder open; clicking an open folder,
+      // e.g. after the hover animation, opens the project itself.
+      if (isOpen || isHovered) openProject();
+      else setIsOpen(true);
     } else {
       moveTo(slot);
     }
+  };
+
+  const openProject = () => {
+    const project = projects[wrapIndex(Math.round(rotationRef.current), count)];
+    if (project) router.push(`/projects/${project.slug}`);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -223,7 +248,8 @@ export function FolderRow({
       moveTo(Math.round(rotationRef.current) - 1);
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      setIsOpen((open) => !open);
+      if (isOpen) openProject();
+      else setIsOpen(true);
     } else if (event.key === "Escape") {
       setIsOpen(false);
     }
@@ -241,7 +267,7 @@ export function FolderRow({
       ref={stageRef}
       role="group"
       aria-roledescription="carousel"
-      aria-label="Project folders. Use the arrow keys to browse and Enter to open a folder."
+      aria-label="Project folders. Use the arrow keys to browse, Enter to peek inside a folder and Enter again to open the project."
       tabIndex={0}
       className={cn(
         "pointer-events-none relative w-full touch-pan-y select-none outline-none focus-visible:ring-2 focus-visible:ring-flag focus-visible:ring-offset-4 focus-visible:ring-offset-background rounded-xl",
