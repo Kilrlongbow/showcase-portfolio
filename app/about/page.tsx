@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { FlipPortrait } from "@/components/flip-portrait";
 
 export const metadata: Metadata = {
   title: "About Me",
@@ -14,18 +14,17 @@ const skills = [
   "Interaction design & prototyping",
 ];
 
+// Shown on the back of the portrait. TODO(Eugene): swap in your own facts.
+const facts = [
+  "Studying ICT at Fontys, specialising in frontend",
+  "Building with React, TypeScript and Next.js",
+  "Every project on this site is a folder you can open",
+];
+
 export default function AboutPage() {
   return (
     <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-10 px-4 py-12 sm:px-8 md:grid-cols-[2fr_3fr] md:py-16">
-      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm">
-        <Image
-          src="/images/me-cutout.png"
-          alt="Eugene Chivurayise"
-          fill
-          sizes="(min-width: 768px) 40vw, 90vw"
-          className="object-contain object-bottom"
-        />
-      </div>
+      <FlipPortrait facts={facts} className="md:sticky md:top-8" />
       <div>
         <h1 className="font-heading text-6xl sm:text-7xl">About Me</h1>
         <p className="mt-6 text-lg leading-relaxed">
