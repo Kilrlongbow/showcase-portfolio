@@ -81,3 +81,29 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Gentle reveal for case-study sections: a short fade and 24px rise driven
+ * by the browser's scroll timeline (no JavaScript, runs off the main thread).
+ * Skipped when the browser lacks support or the visitor prefers reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
