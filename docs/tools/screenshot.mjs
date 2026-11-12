@@ -85,7 +85,7 @@ for (const path of paths) {
     await send("Page.navigate", { url: BASE + path });
     await done;
     await send("Runtime.evaluate", { expression: "document.fonts.ready", awaitPromise: true });
-    await sleep(1500); // let entrance animations settle
+    await sleep(3000); // let entrance animations settle
     const { data } = await send("Page.captureScreenshot", { format: "png" });
     const file = `docs/screenshots/${prefix}-${nameFor(path)}-${device}.png`;
     writeFileSync(file, Buffer.from(data, "base64"));

@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, useRef, useState } from "react";
+import { type CSSProperties, useId, useRef, useState } from "react";
 import type { Project } from "@/data/projects";
 import { ImageLightbox } from "@/components/image-lightbox";
 import { ProjectCard } from "@/components/project-card";
@@ -23,6 +23,7 @@ const spring = "cubic-bezier(0.34, 1.56, 0.64, 1)";
  * opens the lightbox, which links through to the project page.
  */
 export function AnimatedFolder({ project, open, interactive = false, className }: AnimatedFolderProps) {
+  const uid = useId().replace(/:/g, "");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sourceRect, setSourceRect] = useState<DOMRect | null>(null);
   const [hiddenCardId, setHiddenCardId] = useState<string | null>(null);
@@ -51,28 +52,72 @@ export function AnimatedFolder({ project, open, interactive = false, className }
         className={cn("folder relative flex items-center justify-center", className)}
         style={{ width: 128, height: 112, perspective: "1000px", "--folder": project.color } as CSSProperties}
       >
-        {/* Back panel */}
+        {/* Ground shadow */}
         <div
-          className="absolute w-32 h-24 bg-folder-back motion-reduce:!transition-none rounded-lg shadow-md ring-1 ring-black/40"
+          aria-hidden="true"
+          className="absolute left-2 right-2 h-3 rounded-[50%] bg-black/30 blur-[6px]"
+          style={{ bottom: 2, zIndex: 0 }}
+        />
+
+        {/* Back panel with its tab, drawn as one shape like a real folder */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 128 110"
+          className="absolute motion-reduce:!transition-none"
           style={{
+            top: "calc(50% - 48px - 14px)",
+            left: 0,
+            width: 128,
+            height: 110,
+            overflow: "visible",
             transformOrigin: "bottom center",
             transform: open ? "rotateX(-15deg)" : "rotateX(0deg)",
             transition,
             zIndex: 10,
           }}
-        />
+        >
+          <defs>
+            <linearGradient id={`${uid}-back`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style={{ stopColor: "var(--folder-tab)" }} />
+              <stop offset="0.22" style={{ stopColor: "var(--folder-back)" }} />
+              <stop offset="1" style={{ stopColor: "color-mix(in oklab, var(--folder-back) 80%, black)" }} />
+            </linearGradient>
+          </defs>
+          <path
+            d="M0 7Q0 0 7 0H43Q49 0 52 5L55 10Q58 14 64 14H121Q128 14 128 21V102Q128 110 120 110H8Q0 110 0 102Z"
+            fill={`url(#${uid}-back)`}
+            style={{ stroke: "color-mix(in oklab, var(--folder-back) 60%, black)" }}
+            strokeWidth="1"
+          />
+          {/* Light catching the top edge of the tab */}
+          <path d="M3 4Q4 1.5 8 1.5H43Q47.5 1.5 50 5.5" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="1" />
+        </svg>
 
-        {/* Tab */}
+        {/* Paper sheets peeking out of the folder */}
         <div
-          className="absolute w-14 h-5 motion-reduce:!transition-none rounded-t-md ring-1 ring-black/40"
+          aria-hidden="true"
+          className="paper-grain absolute rounded-[3px] bg-[#fffaf0] shadow-[0_1px_2px_rgba(0,0,0,0.25)] motion-reduce:!transition-none"
           style={{
-            top: "calc(50% - 48px - 14px)",
-            left: 0,
-            background: "linear-gradient(to bottom, var(--folder-tab), var(--folder-back))",
-            transformOrigin: "bottom center",
-            transform: open ? "rotateX(-25deg) translateY(-2px)" : "rotateX(0deg)",
-            transition,
-            zIndex: 10,
+            left: 9,
+            right: 14,
+            top: open ? 6 : 14,
+            height: 74,
+            transform: "rotate(-1.8deg)",
+            transition: `top 500ms ${spring}`,
+            zIndex: 12,
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="paper-grain absolute rounded-[3px] bg-[#f4e8cc] shadow-[0_1px_2px_rgba(0,0,0,0.25)] motion-reduce:!transition-none"
+          style={{
+            left: 16,
+            right: 8,
+            top: open ? 10 : 17,
+            height: 72,
+            transform: "rotate(1.4deg)",
+            transition: `top 500ms ${spring}`,
+            zIndex: 13,
           }}
         />
 
@@ -100,32 +145,34 @@ export function AnimatedFolder({ project, open, interactive = false, className }
           </div>
         )}
 
-        {/* Front panel */}
+        {/* Front panel: card stock with a crease, a slight sheen and grain */}
         <div
-          className="absolute w-32 bg-folder-front motion-reduce:!transition-none rounded-lg shadow-lg ring-1 ring-black/40"
+          aria-hidden="true"
+          className="absolute w-32 overflow-hidden rounded-t-[6px] rounded-b-lg motion-reduce:!transition-none"
           style={{
             top: "calc(50% - 48px + 14px)",
             height: 82,
+            background:
+              "linear-gradient(180deg, color-mix(in oklab, var(--folder-front) 82%, white) 0%, var(--folder-front) 22%, color-mix(in oklab, var(--folder-front) 84%, black) 100%)",
+            border: "1px solid color-mix(in oklab, var(--folder-front) 62%, black)",
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.18), 0 -2px 6px rgba(0,0,0,0.18), 0 8px 14px -6px rgba(0,0,0,0.45)",
             transformOrigin: "bottom center",
             transform: lid,
             transition,
             zIndex: 30,
           }}
-        />
-
-        {/* Shine */}
-        <div
-          className="absolute w-32 rounded-lg overflow-hidden pointer-events-none motion-reduce:!transition-none"
-          style={{
-            top: "calc(50% - 48px + 14px)",
-            height: 82,
-            background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%)",
-            transformOrigin: "bottom center",
-            transform: lid,
-            transition,
-            zIndex: 31,
-          }}
-        />
+        >
+          {/* Fold crease near the top edge */}
+          <span className="absolute inset-x-1.5 top-[7px] h-px bg-black/20" />
+          <span className="absolute inset-x-1.5 top-[8px] h-px bg-white/25" />
+          {/* Sheen and paper grain */}
+          <span
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(125deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.06) 38%, transparent 55%)" }}
+          />
+          <span className="paper-grain absolute inset-0 opacity-60 mix-blend-overlay" />
+        </div>
       </div>
 
       {interactive && (

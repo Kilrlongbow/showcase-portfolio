@@ -76,6 +76,16 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** docs/screenshots/after-home-desktop.png
 - **Status:** Done
 
+## 1.6 · More realistic folders
+- **Area:** Home page
+- **Feedback:** Make the folders look more realistic (review round 2).
+- **Change:** The back panel and tab are now drawn as one SVG shape with a curved shoulder, like a real folder, instead of two separate boxes. Two paper sheets peek out of the top and lift slightly when the folder opens. The front panel looks like card stock: light from above, a fold crease near the top edge, a diagonal sheen and a fine paper grain. A soft shadow under each folder replaces the hard black outlines. Size, position, colours and the open animation are unchanged, so the V1 layout stays the same.
+- **Why:** The flat boxes read as icons. The extra depth and material detail make them look like folders you can open, which strengthens the portfolio's main idea.
+- **Files:** `components/animated-folder.tsx`, `app/globals.css`
+- **Before:** docs/screenshots/before-home-desktop.png
+- **After:** docs/screenshots/after-home-desktop.png, docs/screenshots/after-folder-open-desktop.png
+- **Status:** Done
+
 ## 2.1 · New "All Projects" page
 - **Area:** Navigation & accessibility
 - **Feedback:** Create a separate page that clearly lists and explains every project in the portfolio. Provide an alternative way to explore projects for users who find the homepage animations difficult to navigate.
