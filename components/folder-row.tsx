@@ -285,7 +285,12 @@ export function FolderRow({
             onPointerLeave={() => isCenter && setIsHovered(false)}
             onClick={() => handleSlotClick(slot)}
           >
-            <AnimatedFolder project={project} open={isCenter && fanOpen} interactive={isCenter} />
+            <AnimatedFolder
+              project={project}
+              open={isCenter && fanOpen}
+              interactive={isCenter}
+              color={isCenter ? "var(--flag-red)" : "var(--steel-blue)"}
+            />
           </div>
         );
       })}

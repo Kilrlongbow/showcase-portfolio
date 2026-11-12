@@ -86,6 +86,16 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** docs/screenshots/after-home-desktop.png, docs/screenshots/after-folder-open-desktop.png
 - **Status:** Done
 
+## 1.7 · Blue folders, red when selected
+- **Area:** Home page
+- **Feedback:** Make all the folders blue, and when one is selected during the scroll it turns red (review round 3).
+- **Change:** Every folder in the row is now steel blue (`#669BBC` from the site palette). The folder in the centre, the selected one, turns flag red (`#C1121F`), and the red moves from folder to folder as you scroll. The selected name in the project wheel and its marker dot are red to match, while the other names stay grey. This replaces the per-project colours from 1.1 on the home page. Case-study pages still use each project's own colour.
+- **Why:** One colour for all folders makes the row calmer, and red is used for only one thing, so the selected folder stands out straight away.
+- **Files:** `components/animated-folder.tsx`, `components/folder-row.tsx`, `components/hero.tsx`
+- **Before:** docs/screenshots/before-home-desktop.png
+- **After:** docs/screenshots/after-home-desktop.png, docs/screenshots/after-folder-open-desktop.png
+- **Status:** Done
+
 ## 2.1 · New "All Projects" page
 - **Area:** Navigation & accessibility
 - **Feedback:** Create a separate page that clearly lists and explains every project in the portfolio. Provide an alternative way to explore projects for users who find the homepage animations difficult to navigate.

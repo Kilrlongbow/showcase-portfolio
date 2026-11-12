@@ -12,6 +12,8 @@ interface AnimatedFolderProps {
   open: boolean;
   /** Only the active folder renders its image cards */
   interactive?: boolean;
+  /** Folder colour; defaults to the project's own colour */
+  color?: string;
   className?: string;
 }
 
@@ -22,7 +24,7 @@ const spring = "cubic-bezier(0.34, 1.56, 0.64, 1)";
  * front panel. Opening it tilts the panels and fans the cards out; a card
  * opens the lightbox, which links through to the project page.
  */
-export function AnimatedFolder({ project, open, interactive = false, className }: AnimatedFolderProps) {
+export function AnimatedFolder({ project, open, interactive = false, color, className }: AnimatedFolderProps) {
   const uid = useId().replace(/:/g, "");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sourceRect, setSourceRect] = useState<DOMRect | null>(null);
@@ -50,7 +52,7 @@ export function AnimatedFolder({ project, open, interactive = false, className }
     <>
       <div
         className={cn("folder relative flex items-center justify-center", className)}
-        style={{ width: 128, height: 112, perspective: "1000px", "--folder": project.color } as CSSProperties}
+        style={{ width: 128, height: 112, perspective: "1000px", "--folder": color ?? project.color } as CSSProperties}
       >
         {/* Ground shadow */}
         <div

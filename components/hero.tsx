@@ -21,7 +21,7 @@ export function Hero({ projects }: { projects: Project[] }) {
     () =>
       Array.from({ length: count * repeats }, (_, i) => {
         const project = projects[i % count]!;
-        return { label: project.title, image: project.images[0]?.src ?? "", color: project.ink };
+        return { label: project.title, image: project.images[0]?.src ?? "", color: "#C1121F" };
       }),
     [projects, count, repeats],
   );
