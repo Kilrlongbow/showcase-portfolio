@@ -58,7 +58,7 @@ export const ProjectCard = forwardRef<HTMLButtonElement, ProjectCardProps>(
           className="object-cover"
           draggable={false}
         />
-        <span className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+        <span className="absolute inset-x-0 bottom-0 h-8 bg-space" />
         <span className="absolute bottom-1.5 left-1.5 right-1.5 text-left text-[10px] font-medium text-primary-foreground truncate">
           {title}
         </span>

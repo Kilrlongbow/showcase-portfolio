@@ -186,7 +186,7 @@ export function ImageLightbox({
       }}
     >
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+        className="absolute inset-0 bg-background"
         style={{
           opacity: animationPhase === "initial" && !isClosing ? 0 : 1,
           transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
@@ -204,7 +204,7 @@ export function ImageLightbox({
         className={cn(
           "absolute top-5 right-5 z-50",
           "w-10 h-10 flex items-center justify-center",
-          "rounded-full bg-muted/50 backdrop-blur-md",
+          "rounded-full bg-muted ring-1 ring-border",
           "border border-border",
           "text-muted-foreground hover:text-foreground hover:bg-muted",
           "transition-all duration-300 ease-out hover:scale-105 active:scale-95",
@@ -229,7 +229,7 @@ export function ImageLightbox({
         className={cn(
           "absolute left-4 md:left-8 z-50",
           "w-12 h-12 flex items-center justify-center",
-          "rounded-full bg-muted/50 backdrop-blur-md",
+          "rounded-full bg-muted ring-1 ring-border",
           "border border-border",
           "text-muted-foreground hover:text-foreground hover:bg-muted",
           "transition-all duration-300 ease-out hover:scale-110 active:scale-95",
@@ -255,7 +255,7 @@ export function ImageLightbox({
         className={cn(
           "absolute right-4 md:right-8 z-50",
           "w-12 h-12 flex items-center justify-center",
-          "rounded-full bg-muted/50 backdrop-blur-md",
+          "rounded-full bg-muted ring-1 ring-border",
           "border border-border",
           "text-muted-foreground hover:text-foreground hover:bg-muted",
           "transition-all duration-300 ease-out hover:scale-110 active:scale-95",
@@ -311,7 +311,6 @@ export function ImageLightbox({
               ))}
             </div>
 
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-card/20 via-transparent to-card/10" />
           </div>
 
           <div

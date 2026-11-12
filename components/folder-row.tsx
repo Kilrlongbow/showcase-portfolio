@@ -95,7 +95,7 @@ export function FolderRow({
         }
       } else if (Math.abs(velocityRef.current) > 0.001 && !reduceMotion) {
         commitRotation(rotationRef.current + velocityRef.current);
-        velocityRef.current *= 0.9;
+        velocityRef.current *= 0.85;
         keepAnimating = true;
       } else {
         velocityRef.current = 0;
@@ -151,14 +151,18 @@ export function FolderRow({
     const stage = stageRef.current;
     if (!stage) return;
 
+    // Only sideways scrolling (trackpad swipe or Shift + wheel) turns the row.
+    // Vertical scrolling is left to the page so the row never traps it.
     const handleWheel = (event: globalThis.WheelEvent) => {
       if (event.ctrlKey || event.metaKey) return;
+      const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      if (!horizontal && !event.shiftKey) return;
       event.preventDefault();
       targetRef.current = null;
-      const raw = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      const delta = raw * 0.006;
+      const raw = horizontal ? event.deltaX : event.deltaY;
+      const delta = raw * 0.004;
       commitRotation(rotationRef.current + delta);
-      velocityRef.current = delta * 0.2;
+      velocityRef.current = delta * 0.15;
       runAnimation();
     };
 
@@ -241,7 +245,7 @@ export function FolderRow({
       ref={stageRef}
       role="group"
       aria-roledescription="carousel"
-      aria-label="Project folders. Use the arrow keys to browse and Enter to open a folder."
+      aria-label="Project folders. Use the arrow keys to browse and Enter to peek inside a folder."
       tabIndex={0}
       className={cn(
         "pointer-events-none relative w-full touch-pan-y select-none outline-none focus-visible:ring-2 focus-visible:ring-flag focus-visible:ring-offset-4 focus-visible:ring-offset-background rounded-xl",
