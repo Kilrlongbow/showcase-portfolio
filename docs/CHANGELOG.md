@@ -116,6 +116,16 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **After:** docs/screenshots/after-folder-open-desktop.png
 - **Status:** Done (tested: clicking the next folder slides it in over several frames, it becomes the active project and fans open)
 
+## 1.10 · Project wheel moves one project per scroll
+- **Area:** Home page
+- **Feedback:** Make the wheel move one project per scroll too (review round 6).
+- **Change:** The curved project list on the right now works like the folders (1.8). Each mouse-wheel notch or trackpad swipe moves exactly one project: down for the next, up for the previous. Before, it spun freely and kept gliding, so one notch could skip names. Small trackpad movements add up to one step, and a short pause after each step stops one flick from racing through the list. The folders follow every step. Dragging and the keyboard work as before. The free-spinning mode is still available as an option (`stepWheel={false}`).
+- **Why:** The wheel and the folders are two views of the same list, so they should behave the same way. Moving one project at a time makes it easy to land on the one you want.
+- **Files:** `components/wheel-carousel.tsx`
+- **Before:** –
+- **After:** –
+- **Status:** Done (tested: down → JoinUs → SmartHome, up → JoinUs → HiccupViews → New PR 2, with the folders and Open button following each step)
+
 ## 2.1 · New "All Projects" page
 - **Area:** Navigation & accessibility
 - **Feedback:** Create a separate page that clearly lists and explains every project in the portfolio. Provide an alternative way to explore projects for users who find the homepage animations difficult to navigate.

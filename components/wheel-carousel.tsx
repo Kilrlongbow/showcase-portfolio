@@ -49,6 +49,8 @@ export interface WheelCarouselProps {
   background?: string;
   panelColor?: string;
   scrollSpeed?: number;
+  /** Mouse wheel moves exactly one item per notch or swipe (default). False spins freely using `scrollSpeed`. */
+  stepWheel?: boolean;
   dragSpeed?: number;
   snap?: boolean;
   momentum?: boolean;
@@ -123,6 +125,7 @@ export function WheelCarousel({
   background = "rgb(255, 246, 236)",
   panelColor,
   scrollSpeed = 0.008,
+  stepWheel = true,
   dragSpeed = 0.02,
   snap = true,
   momentum = true,
@@ -169,6 +172,10 @@ export function WheelCarousel({
   const frameRef = useRef<number | null>(null);
   // Rotation the wheel eases towards after a controlled activeIndex change
   const targetRef = useRef<number | null>(null);
+  // Targets from `activeIndex` are applied silently; wheel steps are reported
+  const targetSilentRef = useRef(true);
+  const wheelAccumRef = useRef(0);
+  const wheelLockRef = useRef(0);
 
   useEffect(() => {
     const normalizedIndex = wrapIndex(selectedRef.current, itemCount);
@@ -241,10 +248,10 @@ export function WheelCarousel({
       if (!draggingRef.current && targetRef.current !== null) {
         const delta = targetRef.current - rotationRef.current;
         if (Math.abs(delta) > 0.001 && !reduceMotion) {
-          commitRotation(rotationRef.current + delta * 0.18, true);
+          commitRotation(rotationRef.current + delta * 0.18, targetSilentRef.current);
           keepAnimating = true;
         } else {
-          commitRotation(targetRef.current, true);
+          commitRotation(targetRef.current, targetSilentRef.current);
           targetRef.current = null;
         }
       } else if (!draggingRef.current && Math.abs(velocityRef.current) > 0.0008) {
@@ -292,6 +299,26 @@ export function WheelCarousel({
     const handleWheel = (event: globalThis.WheelEvent) => {
       if (event.ctrlKey || event.metaKey) return; // don't hijack pinch-zoom
       event.preventDefault();
+
+      if (stepWheel) {
+        // One item per notch or swipe: small trackpad deltas add up to a step,
+        // and a short lock stops one flick from skipping several items.
+        const now = performance.now();
+        if (now < wheelLockRef.current) return;
+        const raw = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        wheelAccumRef.current += event.deltaMode === 1 ? raw * 40 : raw;
+        if (Math.abs(wheelAccumRef.current) < 40) return;
+        const direction = Math.sign(wheelAccumRef.current);
+        wheelAccumRef.current = 0;
+        wheelLockRef.current = now + 280;
+        velocityRef.current = 0;
+        const base = targetRef.current ?? Math.round(rotationRef.current);
+        targetSilentRef.current = false;
+        targetRef.current = base + direction;
+        runAnimation();
+        return;
+      }
+
       targetRef.current = null;
       const delta = event.deltaY * scrollSpeed;
       commitRotation(rotationRef.current + delta);
@@ -301,7 +328,7 @@ export function WheelCarousel({
 
     stage.addEventListener("wheel", handleWheel, { passive: false });
     return () => stage.removeEventListener("wheel", handleWheel);
-  }, [commitRotation, runAnimation, scrollSpeed]);
+  }, [commitRotation, runAnimation, scrollSpeed, stepWheel]);
 
   useEffect(() => {
     if (activeIndex === undefined) return;
@@ -314,6 +341,7 @@ export function WheelCarousel({
     if (delta > itemCount / 2) delta -= itemCount;
     if (delta < -itemCount / 2) delta += itemCount;
     velocityRef.current = 0;
+    targetSilentRef.current = true;
     targetRef.current = Math.round(rotationRef.current) + delta;
     runAnimationRef.current();
   }, [activeIndex, itemCount]);
