@@ -1,6 +1,8 @@
 export interface ProjectImage {
   src: string;
   alt: string;
+  /** "contain" shows the whole image (diagrams, screenshots); photos fill the frame by default */
+  fit?: "contain";
 }
 
 export interface ProjectSection {
@@ -59,6 +61,12 @@ export interface Project {
   draft?: boolean;
 }
 
+const pic = (file: string, alt: string, fit?: "contain"): ProjectImage => ({
+  src: `/images/projects/${file}`,
+  alt,
+  ...(fit && { fit }),
+});
+
 const img = (slug: string, n: number, alt: string): ProjectImage => ({
   src: `/images/projects/${slug}-${n}.svg`,
   alt,
@@ -98,24 +106,70 @@ const allProjects: Project[] = [
     title: "HiccupViews",
     color: "#C1121F",
     ink: "#C1121F",
-    discipline: "frontend",
-    contents: ["Problem", "Research", "Frontend build", "Result"],
-    summary: "TODO(Eugene): one sentence on what HiccupViews is and who it is for.",
-    meta: { role: "Frontend developer", stack: "React, TypeScript, CSS", duration: "6 weeks" },
-    images: [1, 2, 3, 4].map((n) => img("hiccupviews", n, `HiccupViews screen ${n}`)),
-    sections: placeholderSections("hiccupviews"),
+    discipline: "visual-design",
+    contents: ["Problem", "Research", "Brand & website", "Result"],
+    summary:
+      "My photography brand, grown from an Instagram page into a visual storytelling studio with its own identity and website.",
+    meta: { role: "Photographer, designer & developer", stack: "React, TypeScript, Tailwind, Vite", duration: "Spring 2026" },
+    images: [
+      pic("hiccupviews-1.png", "The HiccupViews logo: a handwritten wordmark with an eye", "contain"),
+      pic("hiccupviews-2.jpg", "Hand-drawn wireframes for the HiccupViews website", "contain"),
+      pic("hiccupviews-3.jpg", "HiccupViews event photo of two friends at a party"),
+      pic("hiccupviews-4.jpg", "HiccupViews portrait of a woman looking at her phone"),
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: "HiccupViews only lived on Instagram. I wanted to turn it into a real brand, with a clear identity and a website that brands and event organisers can book from.",
+      },
+      {
+        heading: "Research & early concepts",
+        body: "I studied photography portfolio sites, defined the brand's mission, values and audience, and sketched the site structure on paper first.",
+      },
+      {
+        heading: "Brand & website",
+        body: "I designed the logo and built the portfolio site in React and TypeScript, with galleries for events and portraits.",
+      },
+      {
+        heading: "Result & reflection",
+        body: "HiccupViews now has a brand and a home outside Instagram. Next I want to explore AR, so a printed photo can open a digital story.",
+      },
+    ],
   },
   {
-    slug: "joinus",
-    title: "JoinUs",
+    slug: "crow-studio",
+    title: "Crow Studio",
     color: "#003049",
     ink: "#003049",
-    discipline: "visual-design",
-    contents: ["Problem", "Research", "Frontend build", "Result"],
-    summary: "TODO(Eugene): one sentence on what JoinUs is and who it is for.",
-    meta: { role: "Frontend developer", stack: "HTML, CSS, JavaScript", duration: "4 weeks" },
-    images: [1, 2, 3, 4].map((n) => img("joinus", n, `JoinUs screen ${n}`)),
-    sections: placeholderSections("joinus"),
+    discipline: "interaction",
+    contents: ["Problem", "Research", "Game prototype", "Result"],
+    summary:
+      "Our student media agency. For the JoinUs Foundation we made an icebreaker game that helps young people start real conversations.",
+    meta: { role: "Concept & research (team of 5)", stack: "HTML, CSS, JavaScript", duration: "Spring 2026" },
+    images: [
+      pic("crow-studio-1.jpg", "Crow Studio brand guide page with the team values and the mascot Crowine", "contain"),
+      pic("crow-studio-2.jpg", "JoinUs game: creating your character", "contain"),
+      pic("crow-studio-3.jpg", "JoinUs game: picking favourite film genres", "contain"),
+      pic("crow-studio-4.jpg", "JoinUs game: drawing a question card", "contain"),
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: "JoinUs fights loneliness among young people, but many visitors at their events find it hard to start a conversation. They asked for a new game for groups of three or four.",
+      },
+      {
+        heading: "Research & early concepts",
+        body: "I sketched card-game concepts and researched conversation-starting questions. Our chosen idea pairs players who give the same answer.",
+      },
+      {
+        heading: "Game prototype",
+        body: "Players join on their phone, build a character from their interests and draw question cards. The phone stays in the background so the talking happens face to face.",
+      },
+      {
+        heading: "Result & reflection",
+        body: "We tested it with players and used their feedback to improve the character builder. I learned I should join planning earlier and ask for feedback more often.",
+      },
+    ],
   },
   {
     slug: "smarthome",
@@ -130,17 +184,39 @@ const allProjects: Project[] = [
     sections: placeholderSections("smarthome"),
   },
   {
-    slug: "new-project-1",
-    title: "New PR 1",
+    slug: "krom-studio",
+    title: "Krom Studio",
     color: "#780000",
     ink: "#780000",
     discipline: "ux-research",
-    contents: ["Open slot"],
-    summary: "Open slot for the next project.",
-    meta: { role: "—", stack: "—", duration: "—" },
-    images: [1, 2, 3, 4].map((n) => img("new-project-1", n, `New project 1 image ${n}`)),
-    sections: placeholderSections("new-project-1"),
-    draft: true,
+    contents: ["Problem", "Research", "Prototype", "Result"],
+    summary:
+      "Linked: for Krom Studio's brief Who Owns the Night?, a web app that lets someone who feels unsafe on a night out in Eindhoven ask for help in one tap.",
+    meta: { role: "Researcher, designer & developer (team of 4)", stack: "HTML, CSS, JavaScript, NFC", duration: "Sep 2026 – Jan 2027" },
+    images: [
+      pic("krom-studio-1.jpg", "User journey of Sara asking for help during a night out", "contain"),
+      pic("krom-studio-2.jpg", "Three concept directions for the help screen, with one-tap chosen", "contain"),
+      pic("krom-studio-3.jpg", "Wireframes of the request flow: idle, sent, received and cancelled", "contain"),
+      pic("krom-studio-4.jpg", "Flow diagram of a help request", "contain"),
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: "Eindhoven already has night-time support, but people who feel something is wrong often don't know where to go or what will happen if they ask.",
+      },
+      {
+        heading: "Research & early concepts",
+        body: "We mapped existing services and user journeys, then compared three help screens and chose the simplest: one big button.",
+      },
+      {
+        heading: "Prototype",
+        body: "Linked lets you ask for help, share an approximate location only if you choose, and cancel at any time. An NFC wristband opens it without an app.",
+      },
+      {
+        heading: "Result & reflection",
+        body: "The prototype is still being tested with users and volunteers. It taught me to design for people under stress: fewer choices, clear words, no surprises.",
+      },
+    ],
   },
   {
     slug: "new-project-2",
@@ -157,10 +233,20 @@ const allProjects: Project[] = [
   },
 ];
 
-export const projects: Project[] =
+/** A section without its own image shows the project image in the same position */
+const withSectionImages = (project: Project): Project => ({
+  ...project,
+  sections: project.sections.map((section, i) => ({
+    ...section,
+    image: section.image ?? project.images[i],
+  })),
+});
+
+export const projects: Project[] = (
   process.env.NODE_ENV === "production"
     ? allProjects.filter((project) => !project.draft)
-    : allProjects;
+    : allProjects
+).map(withSectionImages);
 
 /** Text still waiting for real content; hidden on the site, listed in the change log */
 export function isPlaceholder(text: string) {

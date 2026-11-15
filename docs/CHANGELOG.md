@@ -245,3 +245,13 @@ Baseline: V1, commit `64acd8f`. Before screenshots: `docs/screenshots/before-*.p
 - **Before:** –
 - **After:** docs/screenshots/after-home-desktop.png
 - **Status:** Done
+
+## 5.5 · HiccupViews, Crow Studio and Krom Studio added as real work
+- **Area:** Portfolio structure & content
+- **Feedback:** Improve the quality, relevance and completeness of project content (see 5.3). Eugene asked to add HiccupViews, Crow Studio and Krom Studio as work he has done, kept brief.
+- **Change:** HiccupViews now has a real summary, role, stack and four short case-study steps. The JoinUs folder was renamed Crow Studio (the student agency that made the JoinUs icebreaker game). The "New PR 1" slot became Krom Studio (the group project Linked, for Krom Studio's brief *Who Owns the Night?*). Each step is one or two sentences. The placeholder SVGs were replaced with real images from the project files: the HiccupViews logo, wireframes and photos; the Crow Studio brand guide and game screens; the Linked user journey, concepts, wireframes and flow. Diagrams and screenshots are shown in full on the case-study page, photos fill the frame. Disciplines: HiccupViews → UI & visual design, Crow Studio → Interaction & motion, Krom Studio → UX research. SmartHome and "New PR 2" are unchanged.
+- **Why:** Visitors see real work with short, readable stories instead of placeholders. Group projects name Eugene's own part.
+- **Files:** `data/projects.ts`, `app/projects/[slug]/page.tsx`, `public/images/projects/`
+- **Before:** docs/screenshots/after-projects-hiccupviews-desktop.png
+- **After:** docs/screenshots/after-new-work-projects-krom-studio-desktop.png
+- **Status:** Done

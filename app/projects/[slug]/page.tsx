@@ -91,7 +91,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[slug]"
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
                   unoptimized={section.image.src.endsWith(".svg")}
-                  className="object-cover"
+                  className={section.image.fit === "contain" ? "object-contain p-3" : "object-cover"}
                 />
               </div>
             )}
